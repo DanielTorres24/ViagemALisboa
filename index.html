@@ -38,6 +38,10 @@
   .hero{background:var(--navy);color:#fff;padding:18px 18px 6px}
   .hero h1{margin:0;font-size:1.45rem;line-height:1.2}
   .hero p{margin:4px 0 0;color:#c5d6e4;font-size:.98rem}
+  .hero{display:flow-root}
+  .summary-link{float:right;margin:0 0 6px 10px;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-radius:12px;
+    background:#fff;color:var(--navy);font-weight:800;font-size:.95rem;text-decoration:none}
+  .summary-link:focus-visible{outline:3px solid var(--now);outline-offset:2px}
 
   /* Barra fixa: dias + agora/a seguir */
   .topbar{position:sticky;top:0;z-index:20;background:var(--navy);padding:8px 10px 10px;padding-top:calc(8px + env(safe-area-inset-top,0px));box-shadow:0 2px 0 rgba(0,0,0,.25)}
@@ -52,6 +56,14 @@
   nav a.park-link{background:var(--c-park);color:#fff}
   nav a.park-link small{color:#dbe9ff}
   nav a small{font-size:.72rem}
+  /* Barra compacta ao fazer scroll: só o nome dos dias */
+  .topbar.compact{padding-top:calc(6px + env(safe-area-inset-top,0px));padding-bottom:6px}
+  .topbar.compact nav a{min-height:36px;font-size:.82rem}
+  .topbar.compact nav a small{display:none}
+  .topbar.compact .status{gap:4px;margin-top:6px}
+  .topbar.compact .st{min-height:34px;padding:4px 10px}
+  .topbar.compact .st span{font-size:.9rem}
+  section{scroll-margin-top:var(--hdr)}
 
   /* Estacionamento em cada cartão */
   .pk{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start;border-radius:12px;padding:10px 12px;margin:0 0 12px}
@@ -123,11 +135,11 @@
   .desc{margin:0 0 12px}
   .warn{background:var(--warn-bg);color:var(--warn-text);border-left:5px solid var(--warn-line);border-radius:10px;padding:10px 12px;margin:0 0 12px;font-weight:600;font-size:.98rem}
 
-  .btns{display:grid;gap:10px}
-  .btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:60px;border-radius:14px;text-decoration:none;font-weight:800;font-size:1.12rem;-webkit-tap-highlight-color:transparent;text-align:center;padding:10px 14px}
+  .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .btn{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:12px;text-decoration:none;font-weight:800;font-size:.95rem;-webkit-tap-highlight-color:transparent;text-align:center;padding:6px 8px}
   .btn:active{transform:scale(.985)}
   .btn.waze{background:var(--waze);color:var(--waze-text)}
-  .btn.gmaps{min-height:52px;font-size:1rem;background:var(--card);color:var(--text);border:2px solid var(--line)}
+  .btn.gmaps{background:var(--card);color:var(--text);border:2px solid var(--line)}
   .btn:focus-visible,nav a:focus-visible,.st:focus-visible{outline:3px solid var(--now);outline-offset:2px}
 
   details.more{margin-top:12px;border-top:1px solid var(--line);padding-top:6px}
@@ -165,13 +177,14 @@
   footer{max-width:640px;margin:0 auto;padding:6px 16px 30px;color:var(--muted);font-size:.9rem}
   noscript{display:block;padding:16px;background:var(--warn-bg);color:var(--warn-text);font-weight:700}
 
-  @media (min-width:560px){ dl.info{grid-template-columns:1fr 1fr} .btns{grid-template-columns:1.4fr 1fr} }
+  @media (min-width:560px){ dl.info{grid-template-columns:1fr 1fr} }
   @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} .btn:active{transform:none} }
 </style>
 </head>
 <body>
 
 <header class="hero">
+  <a class="summary-link" href="resumo.html">📋 Resumo</a>
   <h1>Viagem a Lisboa</h1>
   <p>Sábado 3 a segunda-feira 5 de outubro de 2026</p>
 </header>
@@ -577,9 +590,20 @@ function update(scroll){
     if(scroll && now >= new Date("2026-10-03T00:00:00")) setTimeout(() => document.getElementById(focus.id).scrollIntoView({behavior:"smooth", block:"start"}), 300);
   }
 }
-update(true);
+update(!location.hash);
+if(location.hash){ const t = document.getElementById(location.hash.slice(1)); if(t) setTimeout(() => t.scrollIntoView({block:"start"}), 50); }
 setInterval(() => update(false), 60*1000);
 window.addEventListener("resize", setHeaderOffset);
+
+/* Barra compacta depois de passar o cabeçalho (com margem para não oscilar) */
+const topbar = document.getElementById("topbar");
+function onScroll(){
+  const y = window.scrollY, c = topbar.classList.contains("compact");
+  if(!c && y > 140){ topbar.classList.add("compact"); setHeaderOffset(); }
+  else if(c && y < 40){ topbar.classList.remove("compact"); setHeaderOffset(); }
+}
+window.addEventListener("scroll", onScroll, {passive:true});
+onScroll();
 </script>
 </body>
 </html>
