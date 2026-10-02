@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b2a3f">
+<meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Viagem a Lisboa, 3 a 5 outubro 2026</title>
+<style>
+  :root{
+    --bg:#f1f4f7; --card:#ffffff; --text:#101c27; --muted:#4a5b6b; --line:#d5dde5; --soft:#f4f6f9;
+    --navy:#0b2a3f; --tile:#16466f;
+    --c-start:#44546a; --c-charge:#0f8a4a; --c-stop:#c2185b; --c-food:#d35f00;
+    --c-hotel:#6a3fb5; --c-sight:#007c89; --c-park:#1565c0;
+    --w-low-bg:#e3f5ea; --w-low:#0b6b38; --w-mid-bg:#fff1d6; --w-mid:#8a5300; --w-high-bg:#fde4e4; --w-high:#a61b1b;
+    --waze:#33ccff; --waze-text:#04222f;
+    --warn-bg:#fff1d6; --warn-text:#7a4a00; --warn-line:#f0b44c;
+    --now:#ffd400; --now-text:#2b2200; --nextc:#9fd3ff;
+    --star:#b26a00;
+    --radius:16px; --hdr:130px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0a141d; --card:#122030; --text:#edf3f8; --muted:#a7b8c7; --line:#27405a; --soft:#0e1a26; --navy:#06121b;
+      --c-start:#5d6f86; --c-charge:#16a35a; --c-stop:#d63a78; --c-food:#e0721a; --c-hotel:#8059cf; --c-sight:#0f97a5; --c-park:#2a7ad6;
+      --w-low-bg:#123825; --w-low:#7fe0a8; --w-mid-bg:#3a2d10; --w-mid:#ffd27a; --w-high-bg:#401818; --w-high:#ff9b9b;
+      --warn-bg:#3a2d10; --warn-text:#ffd88a; --warn-line:#9a6b12; --star:#ffc35a;
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  :root{padding-top:env(safe-area-inset-top,0px)}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    font-size:18px;line-height:1.45;color:var(--text);background:var(--bg);padding-bottom:env(safe-area-inset-bottom,0px)}
+
+  .hero{background:var(--navy);color:#fff;padding:18px 18px 6px}
+  .hero h1{margin:0;font-size:1.45rem;line-height:1.2}
+  .hero p{margin:4px 0 0;color:#c5d6e4;font-size:.98rem}
+
+  /* Barra fixa: dias + agora/a seguir */
+  .topbar{position:sticky;top:0;z-index:20;background:var(--navy);padding:8px 10px 10px;padding-top:calc(8px + env(safe-area-inset-top,0px));box-shadow:0 2px 0 rgba(0,0,0,.25)}
+  nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50px;border-radius:12px;
+    background:rgba(255,255,255,.1);color:#fff;text-decoration:none;font-weight:700;font-size:.95rem;line-height:1.15;text-align:center;padding:4px 2px;-webkit-tap-highlight-color:transparent}
+  nav a small{font-weight:500;font-size:.78rem;color:#c5d6e4}
+  nav a.on{background:#fff;color:var(--navy)}
+  nav a.on small{color:#35566e}
+  nav a.tesla-link{background:var(--c-charge);color:#fff}
+  nav a.tesla-link small{color:#d9f5e5}
+  .status{display:grid;gap:6px;margin-top:8px}
+  .st{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;background:rgba(255,255,255,.08);border-radius:12px;padding:8px 10px;min-height:44px}
+  .st b{flex:0 0 auto;font-size:.78rem;font-weight:800;border-radius:999px;padding:3px 9px}
+  .st.now b{background:var(--now);color:var(--now-text)}
+  .st.next b{background:var(--nextc);color:#06223a}
+  .st span{flex:1 1 auto;min-width:0;font-weight:700;font-size:.98rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .st.info span{white-space:normal;font-weight:600}
+
+  main{padding:4px 12px 40px;max-width:640px;margin:0 auto}
+
+  .day-head{border-radius:var(--radius);color:#fff;padding:16px;margin:20px 0 14px;background-color:var(--tile);
+    background-image:linear-gradient(45deg,rgba(255,255,255,.09) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.09) 75%),
+      linear-gradient(45deg,rgba(255,255,255,.09) 25%,transparent 25%,transparent 75%,rgba(255,255,255,.09) 75%);
+    background-size:28px 28px;background-position:0 0,14px 14px;scroll-margin-top:var(--hdr)}
+  .day-head h2{margin:0;font-size:1.4rem;line-height:1.2}
+  .day-head p{margin:6px 0 0;font-size:.98rem;color:#e3eefa}
+  .tesla-head{background-color:var(--c-charge)}
+
+  .k-start{--k:var(--c-start)} .k-end{--k:var(--c-start)} .k-charge{--k:var(--c-charge)} .k-stop{--k:var(--c-stop)}
+  .k-food{--k:var(--c-food)} .k-hotel{--k:var(--c-hotel)} .k-sight{--k:var(--c-sight)} .k-park{--k:var(--c-park)}
+
+  .stop{background:var(--card);border:2px solid var(--k);border-radius:var(--radius);margin:0 0 16px;overflow:hidden;scroll-margin-top:var(--hdr)}
+  .stop.optional{border-style:dashed}
+  .stop-head{display:flex;align-items:center;gap:12px;background:var(--k);color:#fff;padding:10px 14px}
+  .stop.optional .stop-head{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.16) 0 10px,transparent 10px 20px)}
+  .kicon{flex:0 0 auto;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:1.4rem}
+  .head-txt{flex:1 1 auto;min-width:0}
+  .stop-head .time{font-size:1.5rem;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+  .stop-head .klabel{font-size:.9rem;font-weight:600;opacity:.95}
+  .flag{display:none;flex:0 0 auto;font-weight:800;font-size:.85rem;padding:6px 10px;border-radius:999px}
+  .stop.now{box-shadow:0 0 0 5px var(--now)}
+  .stop.now .flag.f-now{display:block;background:var(--now);color:var(--now-text)}
+  .stop.next .flag.f-next{display:block;background:var(--nextc);color:#06223a}
+
+  .stop-body{padding:12px 14px 16px}
+  .stop h3{margin:0 0 4px;font-size:1.22rem;line-height:1.25}
+  .addr{margin:0 0 10px;color:var(--muted);font-size:.98rem}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:.88rem;font-weight:700;border-radius:999px;padding:4px 11px;background:var(--soft);color:var(--text)}
+  .w-low{background:var(--w-low-bg);color:var(--w-low)} .w-mid{background:var(--w-mid-bg);color:var(--w-mid)} .w-high{background:var(--w-high-bg);color:var(--w-high)}
+  .chip.opt{color:var(--muted);border:1px dashed var(--muted)}
+  .desc{margin:0 0 12px}
+  .warn{background:var(--warn-bg);color:var(--warn-text);border-left:5px solid var(--warn-line);border-radius:10px;padding:10px 12px;margin:0 0 12px;font-weight:600;font-size:.98rem}
+
+  .btns{display:grid;gap:10px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:60px;border-radius:14px;text-decoration:none;font-weight:800;font-size:1.12rem;-webkit-tap-highlight-color:transparent;text-align:center;padding:10px 14px}
+  .btn:active{transform:scale(.985)}
+  .btn.waze{background:var(--waze);color:var(--waze-text)}
+  .btn.gmaps{min-height:52px;font-size:1rem;background:var(--card);color:var(--text);border:2px solid var(--line)}
+  .btn:focus-visible,nav a:focus-visible,.st:focus-visible{outline:3px solid var(--now);outline-offset:2px}
+
+  details.more{margin-top:12px;border-top:1px solid var(--line);padding-top:6px}
+  details.more summary{cursor:pointer;font-weight:700;color:var(--muted);padding:8px 0;min-height:40px;list-style-position:inside}
+  dl.info{margin:6px 0 0;display:grid;gap:8px}
+  dl.info div{display:grid;grid-template-columns:28px 1fr;column-gap:8px;background:var(--soft);border-radius:10px;padding:8px 10px}
+  dl.info dt{grid-column:2;font-size:.82rem;font-weight:700;color:var(--muted)}
+  dl.info dd{grid-column:2;margin:0;font-size:1rem}
+  dl.info .ic{grid-row:1 / span 2;grid-column:1;font-size:1.15rem;line-height:1.4}
+
+  /* Sugestões de restaurantes */
+  .eats{display:grid;gap:10px;margin:0 0 4px}
+  .eats-title{margin:0 0 8px;font-weight:800;font-size:1rem}
+  .eat{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--soft)}
+  .eat-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .eat-top strong{font-size:1.08rem}
+  .star{flex:0 0 auto;font-weight:800;color:var(--star)}
+  .eat-meta{margin:2px 0 4px;color:var(--muted);font-size:.88rem}
+  .eat p.note{margin:0 0 8px;font-size:.98rem}
+  .eat-btns{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:6px}
+  .eat-btns a{display:flex;align-items:center;justify-content:center;min-height:46px;border-radius:10px;text-decoration:none;font-weight:800;font-size:.92rem;text-align:center;padding:4px}
+  .eat-btns .w{background:var(--waze);color:var(--waze-text)}
+  .eat-btns .g{background:var(--card);color:var(--text);border:2px solid var(--line)}
+  .eat-btns .t{background:var(--card);color:var(--text);border:2px solid var(--c-food)}
+  .eat-btns a.off{visibility:hidden}
+
+  .note-box{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin:0 0 14px}
+  .note-box h3{margin:0 0 8px;font-size:1.15rem}
+  .note-box ul{margin:0;padding-left:20px} .note-box li{margin:0 0 6px}
+  .note-box.alert{background:var(--warn-bg);color:var(--warn-text);border:0;border-left:6px solid var(--warn-line)}
+  table{width:100%;border-collapse:collapse;font-size:.96rem}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:.84rem;color:var(--muted)}
+  .scroll-x{overflow-x:auto}
+  footer{max-width:640px;margin:0 auto;padding:6px 16px 30px;color:var(--muted);font-size:.9rem}
+  noscript{display:block;padding:16px;background:var(--warn-bg);color:var(--warn-text);font-weight:700}
+
+  @media (min-width:560px){ dl.info{grid-template-columns:1fr 1fr} .btns{grid-template-columns:1.4fr 1fr} }
+  @media (prefers-reduced-motion: reduce){ html{scroll-behavior:auto} .btn:active{transform:none} }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>Viagem a Lisboa</h1>
+  <p>Sábado 3 a segunda-feira 5 de outubro de 2026</p>
+</header>
+
+<div class="topbar" id="topbar">
+  <nav aria-label="Dias da viagem">
+    <a href="#sab" data-day="2026-10-03">Sábado<small>3 out</small></a>
+    <a href="#dom" data-day="2026-10-04">Domingo<small>4 out</small></a>
+    <a href="#seg" data-day="2026-10-05">Segunda<small>5 out</small></a>
+    <a href="#tesla" class="tesla-link">Tesla<small>Carga</small></a>
+  </nav>
+  <div class="status" id="status" aria-live="polite"></div>
+</div>
+
+<noscript>Esta página precisa de JavaScript ativo para mostrar o itinerário.</noscript>
+<main id="app"></main>
+<footer>Horas e distâncias são estimativas. Avaliações do Google Maps à data de preparação; confirmar horários antes de ir, sobretudo no feriado.</footer>
+
+<script>
+/* EDITAR AQUI: loja de pedras em Alcochete */
+const PEDRAS = { nome:"", morada:"" };
+
+const waze  = p => p.ll ? `https://waze.com/ul?ll=${p.ll}&navigate=yes` : "https://waze.com/ul?q=" + encodeURIComponent(p.q) + "&navigate=yes";
+const gmaps = p => "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(p.ll || p.q) + "&travelmode=" + (p.mode || "driving");
+
+const VILLA_LL = "38.723250,-9.275194";
+const HOTEL_LL = "38.756667,-9.098306";
+const MEALHADA = "Tesla Supercharger Mealhada, Rua de São Domingos 20, 3050-983 Mealhada";
+const FATIMA   = "Tesla Supercharger Fátima, Estrada da Batalha 42, 2495-405 Fátima";
+const pedrasAddr = PEDRAS.morada ? (PEDRAS.nome ? PEDRAS.nome + ", " : "") + PEDRAS.morada : "";
+
+const TRIP = [
+ { id:"sab", date:"2026-10-03", dateLabel:"Sáb 03/10", title:"Sábado 3 de outubro", sub:"Mealhada, Alcochete e Barcarena", stops:[
+  { kind:"charge", time:"10:00", walk:"low", title:"Tesla Supercharger Mealhada",
+    addr:"Rua de São Domingos 20, 3050-983 Mealhada", q:MEALHADA,
+    desc:"Carga rápida e pausa. Carregar até 80 a 90 %, porque o troço seguinte tem ≈ 230 km.",
+    stay:"15 a 25 min", eta:"≈ 09:40 a 10:00",
+    leg:"≈ 150 km · ≈ 1h35 desde a Póvoa de Varzim (saída às 08:00)",
+    parking:"Nos lugares do Supercharger.", access:"Sem caminhadas. Casa de banho e café nas imediações." },
+
+  { kind:"stop", time:"12:30–13:00", walk:"low", title:"Alcochete: compra de pedras",
+    addr: pedrasAddr || "Alcochete (falta a morada da loja)", q: pedrasAddr || "Alcochete, Portugal", needsAddr: !pedrasAddr,
+    desc:"Destino obrigatório. Paragem curta para comprar as pedras.",
+    stay:"20 a 30 min", eta:"≈ 12:35 a 12:45",
+    leg:"≈ 230 km · ≈ 2h15 (A1 e Ponte Vasco da Gama)",
+    parking:"O mais perto possível da porta da loja.",
+    access:"As pedras são pesadas: estacionar à porta e pedir ajuda na loja para carregar." },
+
+  { kind:"food", time:"13:30", walk:"low", title:"Almoço em Alcochete",
+    addr:"Centro de Alcochete", desc:"Comida tradicional, perto da loja. Sábado ao almoço convém ligar a reservar mesa para 4.",
+    stay:"≈ 1h30 (saída às 15:00)", eta:"≈ 13:00 a 13:30", leg:"≈ 1 a 3 km · ≈ 5 min",
+    parking:"Na rua junto ao restaurante.", access:"Escolher mesa perto da entrada.",
+    eat:[
+      { n:"Barrete Verde", r:"4,5", c:"2 039", h:"Sáb 12:30–15:00", note:"Cozinha tradicional, ambiente ribatejano. Muito procurado, reservar.", ll:"38.755256,-8.963070", tel:"+351212340154" },
+      { n:"Casa Velha", r:"4,7", c:"245", h:"Sáb 12:00–14:30", note:"Comida caseira de família, preços acessíveis. A cozinha fecha cedo: ligar antes. Levar dinheiro.", ll:"38.754743,-8.962089", tel:"+351911767667" },
+      { n:"Os Petiscos do António", r:"4,3", c:"850", h:"Sáb 12:00–15:00", note:"Sabor caseiro (pataniscas, atum à lagareiro). Na avenida principal, à entrada da vila.", ll:"38.751212,-8.967028", tel:"+351212347826" }
+    ] },
+
+  { kind:"hotel", time:"16:00", walk:"low", title:"Lisbon Country Villa (check-in)",
+    addr:"Quinta de Santo António do Sol Posto 2, 2730-038 Barcarena", ll:VILLA_LL,
+    desc:"Check-in e tarde livre para descansar. O Waze leva à localização exata.",
+    stay:"Dormida", eta:"≈ 15:55 a 16:15",
+    leg:"≈ 60 km · ≈ 55 min (partida às 15:00)",
+    parking:"Na quinta. Confirmar com o alojamento.", access:"Perguntar se há tomada ou carregador para o carro." },
+
+  { kind:"food", time:"20:00", walk:"low", title:"Jantar perto de Barcarena",
+    addr:"Barcarena / Oeiras", desc:"Comida portuguesa com boa relação qualidade-preço. Sábado à noite enche: reservar.",
+    stay:"≈ 1h30 a 2h", eta:"≈ 19:50", leg:"≈ 1 a 6 km · ≈ 5 a 15 min",
+    parking:"Na rua junto ao restaurante.", access:"Restaurantes ao nível da rua.",
+    eat:[
+      { n:"O Muchacho", r:"4,3", c:"2 889", h:"Sáb 19:00–22:00", note:"Portuguesa, doses generosas e preço acessível. A ≈ 1 km do alojamento.", ll:"38.731647,-9.277103", tel:"+351967448988" },
+      { n:"Grelha da Barra", r:"4,6", c:"1 583", h:"Sáb 19:00–22:00", note:"Grelhados (porco preto, frango), boa relação qualidade-preço. ≈ 15 min de carro, em Oeiras. Reservar.", ll:"38.683967,-9.320223", tel:"+351214403026" }
+    ] }
+ ]},
+ { id:"dom", date:"2026-10-04", dateLabel:"Dom 04/10", title:"Domingo 4 de outubro", sub:"Belém de manhã, Terreiro do Paço à tarde", stops:[
+  { kind:"start", time:"09:00", title:"Saída da Lisbon Country Villa",
+    addr:"Barcarena", ll:VILLA_LL, desc:"Saída para Belém.", stay:"Partida", eta:"", leg:"", parking:"", access:"" },
+
+  { kind:"park", time:"09:30", walk:"mid", title:"Estacionamento CCB (Belém)",
+    addr:"Centro Cultural de Belém, Praça do Império, 1449-003 Lisboa", q:"Estacionamento CCB Centro Cultural de Belém Lisboa",
+    desc:"O carro fica aqui toda a manhã.",
+    stay:"Até cerca das 14:00", eta:"≈ 09:25 a 09:35", leg:"≈ 15 km · ≈ 25 min",
+    parking:"Parque do CCB. Confirmar tarifa.",
+    access:"Aos Pastéis de Belém são ≈ 700 m planos. Quem tiver mais dificuldade pode ficar à porta dos Pastéis antes de estacionar." },
+
+  { kind:"food", time:"09:30–10:15", walk:"mid", title:"Pastéis de Belém",
+    addr:"Rua de Belém 84–92, 1300-085 Lisboa", q:"Pastéis de Belém, Rua de Belém 84, 1300-085 Lisboa", mode:"walking",
+    desc:"Pastéis de nata na casa original. Pedir mesa na sala interior em vez da fila de take-away.",
+    stay:"≈ 45 min", eta:"≈ 09:40", leg:"≈ 700 m a pé · ≈ 10 min",
+    parking:"Usar o CCB.", access:"Piso plano." },
+
+  { kind:"sight", time:"10:15–10:45", walk:"low", title:"Mosteiro dos Jerónimos (exterior)",
+    addr:"Praça do Império, Lisboa", q:"Mosteiro dos Jerónimos, Lisboa", mode:"walking",
+    desc:"Ver a fachada pelo exterior, sem filas.", stay:"≈ 30 min", eta:"≈ 10:15", leg:"≈ 250 m a pé",
+    parking:"CCB a ≈ 400 m.", access:"Zona plana e larga." },
+
+  { kind:"sight", time:"10:45–11:15", walk:"low", title:"Jardim da Praça do Império",
+    addr:"Em frente aos Jerónimos", q:"Jardim da Praça do Império, Lisboa", mode:"walking",
+    desc:"Passeio calmo e descanso sentados.", stay:"≈ 30 min", eta:"≈ 10:45", leg:"≈ 150 m a pé",
+    parking:"Junto ao CCB.", access:"Caminhos planos." },
+
+  { kind:"sight", opt:true, time:"11:15–12:00", walk:"high", title:"Padrão dos Descobrimentos",
+    addr:"Avenida de Brasília, Lisboa", q:"Padrão dos Descobrimentos, Lisboa", mode:"walking",
+    desc:"Só se o grupo estiver confortável. Ida e volta ≈ 1,8 km a pé.", stay:"≈ 45 min", eta:"≈ 11:15",
+    leg:"≈ 900 m a pé (passagem subterrânea)", parking:"Alternativa: ir de carro e estacionar junto ao rio.",
+    access:"É o troço mais longo a pé da manhã." },
+
+  { kind:"sight", opt:true, time:"12:00–12:15", walk:"mid", title:"Torre de Belém",
+    addr:"Avenida de Brasília, Lisboa", q:"Torre de Belém, Lisboa",
+    desc:"Opcional. Só o exterior, de preferência indo de carro.", stay:"≈ 15 min", eta:"≈ 12:00",
+    leg:"≈ 3 min de carro", parking:"Junto ao rio, se houver lugar.", access:"Algum piso irregular junto à torre." },
+
+  { kind:"food", time:"12:30–13:30", walk:"low", title:"Almoço em Belém",
+    addr:"Rua de Belém, junto aos Pastéis", desc:"Três tascas a poucos passos umas das outras, a ≈ 600 m do CCB.",
+    stay:"≈ 1h (saída às 14:00)", eta:"≈ 12:30", leg:"A pé, ≈ 600 m do CCB",
+    parking:"Carro no CCB.", access:"Piso plano.",
+    eat:[
+      { n:"Taberna dos Ferreiros", r:"4,6", c:"1 955", h:"Dom 12:00–15:00", note:"Cozinha tradicional numa travessa sossegada. Polvo muito elogiado.", ll:"38.697551,-9.201915", tel:"+351215873837", mode:"walking" },
+      { n:"Adega de Belém", r:"4,4", c:"3 142", h:"Dom 12:00–16:30", note:"Peixe fresco e pratos portugueses, na Rua de Belém. O couvert é pago à parte.", ll:"38.697384,-9.202556", tel:"+351213639167", mode:"walking" },
+      { n:"Queijadas de Belém", r:"4,2", c:"2 451", h:"Aberto todo o dia", note:"Comida portuguesa simples, preços justos.", ll:"38.697144,-9.201794", tel:"+351213630034", mode:"walking" }
+    ] },
+
+  { kind:"park", time:"14:30", walk:"low", title:"Saba Praça do Município",
+    addr:"Praça do Município, Lisboa", q:"Saba Praça do Município, Lisboa",
+    desc:"Parque subterrâneo a ≈ 300 m do Terreiro do Paço.", stay:"Até cerca das 16:30", eta:"≈ 14:25",
+    leg:"≈ 8 km · ≈ 20 a 25 min", parking:"Parque Saba. Confirmar tarifa.", access:"Calçada portuguesa: calçado confortável." },
+
+  { kind:"sight", time:"14:40–15:15", walk:"low", title:"Praça do Comércio",
+    addr:"Terreiro do Paço, Lisboa", q:"Praça do Comércio, Lisboa", mode:"walking",
+    desc:"A grande praça junto ao Tejo.", stay:"≈ 35 min", eta:"≈ 14:40", leg:"≈ 300 m a pé",
+    parking:"Saba.", access:"Plana. Esplanadas nas arcadas para descansar." },
+
+  { kind:"sight", time:"15:15–15:30", walk:"mid", title:"Cais das Colunas",
+    addr:"Praça do Comércio, Lisboa", q:"Cais das Colunas, Lisboa", mode:"walking",
+    desc:"Escadaria que desce até ao rio.", stay:"≈ 15 min", eta:"≈ 15:15", leg:"≈ 150 m a pé",
+    parking:"Saba.", access:"Há degraus. Pode-se ver do topo." },
+
+  { kind:"sight", time:"15:30–16:00", walk:"low", title:"Rua Augusta (curta)",
+    addr:"Arco da Rua Augusta, Lisboa", q:"Arco da Rua Augusta, Lisboa", mode:"walking",
+    desc:"Passar o arco e voltar ao parque.", stay:"≈ 30 min", eta:"≈ 15:30", leg:"≈ 100 m a pé",
+    parking:"Regresso ao Saba ≈ 300 m.", access:"Plana, mas movimentada." },
+
+  { kind:"hotel", time:"17:00", walk:"low", title:"Alojamento Parque das Nações (check-in)",
+    addr:"Parque das Nações, Lisboa", ll:HOTEL_LL,
+    desc:"Check-in. Fim de tarde livre. O Waze leva à localização exata.",
+    stay:"Dormida", eta:"≈ 16:45 a 17:00", leg:"≈ 10 km · ≈ 25 min (partida 16:15 a 16:30)",
+    parking:"Confirmar com o alojamento.", access:"Zona plana." },
+
+  { kind:"food", time:"20:00", walk:"low", title:"Jantar perto do Parque das Nações",
+    addr:"Olivais / Parque das Nações", desc:"Comida portuguesa bem avaliada. Todos a ≈ 5 min de carro do alojamento.",
+    stay:"≈ 1h30 a 2h", eta:"≈ 19:50", leg:"≈ 1,5 a 2 km · ≈ 5 min de carro",
+    parking:"Na rua ou parques da zona.", access:"Zonas planas.",
+    eat:[
+      { n:"Solar da Gula", r:"4,3", c:"2 304", h:"Dom até 23:00", note:"Cozinha regional portuguesa, doses grandes, no bairro antigo dos Olivais.", ll:"38.768882,-9.106882", tel:"+351960274544" },
+      { n:"D'Bacalhau", r:"4,4", c:"10 380", h:"Dom 19:00–23:00", note:"Especialidade em bacalhau, junto ao rio. Muito procurado, reservar.", ll:"38.771300,-9.092300", tel:"+351218941296" },
+      { n:"Tacho do Pescador", r:"4,2", c:"5 133", h:"Dom até 24:00", note:"Peixe e marisco, doses generosas. Ao lado do D'Bacalhau.", ll:"38.770493,-9.092361", tel:"+351218948061" }
+    ] }
+ ]},
+ { id:"seg", date:"2026-10-05", dateLabel:"Seg 05/10", title:"Segunda-feira 5 de outubro (feriado)", sub:"Oceanário e regresso a casa", stops:[
+  { kind:"hotel", time:"09:30–10:00", walk:"low", title:"Check-out",
+    addr:"Parque das Nações", ll:HOTEL_LL, desc:"Malas no carro.", stay:"≈ 30 min", eta:"", leg:"", parking:"", access:"" },
+
+  { kind:"sight", time:"10:00–10:30", walk:"low", title:"Oceanário de Lisboa",
+    addr:"Esplanada D. Carlos I, 1990-005 Lisboa", q:"Oceanário de Lisboa, Esplanada D. Carlos I, 1990-005 Lisboa",
+    desc:"Visita até cerca das 13:00. Comprar bilhetes online.", stay:"≈ 2h30 a 3h", eta:"≈ 10:05 a 10:15",
+    leg:"≈ 1,5 km · ≈ 5 min", parking:"Parque junto ao Oceanário. Em feriado pode encher: chegar cedo.",
+    access:"Totalmente acessível. Usar os elevadores." },
+
+  { kind:"food", time:"13:00–14:15", walk:"low", title:"Almoço no Parque das Nações",
+    addr:"Perto do Oceanário", desc:"É feriado: ligar antes a confirmar que estão abertos.",
+    stay:"≈ 1h15", eta:"≈ 13:00", leg:"A pé ou ≈ 5 min de carro",
+    parking:"Carro no parque do Oceanário.", access:"Zona plana.",
+    eat:[
+      { n:"Dom João D'Aviz", r:"4,9", c:"52", h:"Seg 10:00–17:00", note:"Comida tradicional com menu do dia, ótima relação qualidade-preço. Perto do alojamento.", ll:"38.757773,-9.097168", tel:"+351218681354" },
+      { n:"Submerso", r:"4,8", c:"64", h:"Seg 12:00–19:00", note:"Pratos portugueses mesmo ao lado do Oceanário, sem mexer o carro.", ll:"38.761930,-9.093445", tel:"", mode:"walking" },
+      { n:"D'Bacalhau", r:"4,4", c:"10 380", h:"Seg 12:00–16:00", note:"Bacalhau junto ao rio, ≈ 5 min de carro.", ll:"38.771300,-9.092300", tel:"+351218941296" }
+    ] },
+
+  { kind:"charge", opt:true, time:"16:10", walk:"low", title:"Opção A: Supercharger Fátima",
+    addr:"Estrada da Batalha 42, 2495-405 Fátima", q:FATIMA,
+    desc:"A meio do caminho. Depois faltam ≈ 230 km.", stay:"25 a 35 min", eta:"≈ 16:00 a 16:15",
+    leg:"≈ 135 km · ≈ 1h25 (saída às 14:30)", parking:"Lugares do Supercharger.", access:"Pausa para casa de banho e café." },
+
+  { kind:"charge", opt:true, time:"16:50", walk:"low", title:"Opção B: Supercharger Mealhada",
+    addr:"Rua de São Domingos 20, 3050-983 Mealhada", q:MEALHADA,
+    desc:"Mais perto de casa. Depois faltam ≈ 150 km.", stay:"20 a 30 min", eta:"≈ 16:45 a 17:00",
+    leg:"≈ 205 km · ≈ 2h05 (saída às 14:30)", parking:"Lugares do Supercharger.", access:"Pausa para casa de banho e café." },
+
+  { kind:"end", time:"19:00", title:"Chegada à Póvoa de Varzim",
+    addr:"Póvoa de Varzim", q:"Póvoa de Varzim, Portugal",
+    desc:"Feriado: esperar trânsito forte na A1 para norte. Sair às 14:30.", stay:"Chegada", eta:"≈ 18:50 a 19:00 sem trânsito",
+    leg:"≈ 230 km desde Fátima ou ≈ 150 km desde a Mealhada", parking:"", access:"" }
+ ]}
+];
+
+const KIND = { start:["🏁","Partida"], charge:["⚡","Carregar"], stop:["📍","Paragem"], food:["🍽️","Refeição"],
+  hotel:["🛏️","Alojamento"], sight:["🏛️","Visita"], park:["🅿️","Estacionar"], end:["🏠","Chegada"] };
+const WALK = { low:["w-low","Pouca caminhada"], mid:["w-mid","Caminhada moderada"], high:["w-high","Mais caminhada"] };
+const ICON = { "Troço até aqui":"🚗", "Chegada estimada":"🕒", "Estacionamento":"🅿️", "Acessibilidade e caminhada":"🚶", "Capacidade":"⚡", "Duração":"⏱️" };
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const rowsHTML = rows => `<dl class="info">${rows.map(r => `<div><span class="ic" aria-hidden="true">${ICON[r[0]]||"•"}</span><dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd></div>`).join("")}</dl>`;
+const navBtns = p => `<div class="btns"><a class="btn waze" href="${waze(p)}" target="_blank" rel="noopener">ABRIR NO WAZE</a><a class="btn gmaps" href="${gmaps(p)}" target="_blank" rel="noopener">GOOGLE MAPS</a></div>`;
+
+function eatHTML(list){
+  return `<p class="eats-title">Sugestões (comida portuguesa, preço moderado)</p><div class="eats">${list.map(e => `
+    <div class="eat">
+      <div class="eat-top"><strong>${esc(e.n)}</strong><span class="star">★ ${esc(e.r)}</span></div>
+      <p class="eat-meta">${esc(e.c)} avaliações no Google Maps. ${esc(e.h)}</p>
+      <p class="note">${esc(e.note)}</p>
+      <div class="eat-btns">
+        <a class="w" href="${waze(e)}" target="_blank" rel="noopener">WAZE</a>
+        <a class="g" href="${gmaps(e)}" target="_blank" rel="noopener">MAPS</a>
+        <a class="t${e.tel?"":" off"}" href="${e.tel?"tel:"+e.tel:"#"}">LIGAR</a>
+      </div>
+    </div>`).join("")}</div>`;
+}
+
+function stopHTML(day, s, i){
+  const k = KIND[s.kind];
+  const chips = [];
+  if(s.walk) chips.push(`<span class="chip ${WALK[s.walk][0]}">🚶 ${WALK[s.walk][1]}</span>`);
+  chips.push(`<span class="chip">⏱️ ${esc(s.stay)}</span>`);
+  if(s.opt) chips.push(`<span class="chip opt">Opcional</span>`);
+  const more = [];
+  if(s.leg) more.push(["Troço até aqui", s.leg]);
+  if(s.eta) more.push(["Chegada estimada", s.eta]);
+  if(s.parking) more.push(["Estacionamento", s.parking]);
+  if(s.access) more.push(["Acessibilidade e caminhada", s.access]);
+  return `
+  <article class="stop k-${s.kind}${s.opt?" optional":""}" id="${day.id}-${i}">
+    <div class="stop-head">
+      <span class="kicon" aria-hidden="true">${k[0]}</span>
+      <div class="head-txt"><div class="time">${esc(s.time)}</div><div class="klabel">${k[1]}, ${day.dateLabel}</div></div>
+      <span class="flag f-now">AGORA</span><span class="flag f-next">A SEGUIR</span>
+    </div>
+    <div class="stop-body">
+      <h3>${esc(s.title)}</h3>
+      <p class="addr">${esc(s.addr)}</p>
+      <div class="chips">${chips.join("")}</div>
+      ${s.needsAddr ? `<p class="warn">Falta a morada da loja de pedras.</p>` : ""}
+      <p class="desc">${esc(s.desc)}</p>
+      ${s.eat ? eatHTML(s.eat) : navBtns(s)}
+      ${more.length ? `<details class="more"><summary>Mais informação</summary>${rowsHTML(more)}</details>` : ""}
+    </div>
+  </article>`;
+}
+
+const dayHTML = d => `<section id="${d.id}"><div class="day-head"><h2>${esc(d.title)}</h2><p>${esc(d.sub)}</p></div>${d.stops.map((s,i)=>stopHTML(d,s,i)).join("")}</section>`;
+
+const CHARGERS = [
+  { t:"Mealhada (ida)", w:"Sábado, ≈ 10:00", a:"Rua de São Domingos 20, 3050-983 Mealhada", q:MEALHADA, s:"40 Superchargers, até 250 kW, 24/7", d:"15 a 25 min" },
+  { t:"Fátima (regresso, opção A)", w:"Segunda, ≈ 16:10", a:"Estrada da Batalha 42, 2495-405 Fátima", q:FATIMA, s:"32 Superchargers, até 250 kW, 24/7", d:"25 a 35 min" },
+  { t:"Mealhada (regresso, opção B)", w:"Segunda, ≈ 16:50", a:"Rua de São Domingos 20, 3050-983 Mealhada", q:MEALHADA, s:"40 Superchargers, até 250 kW, 24/7", d:"20 a 30 min" }
+];
+const teslaHTML = () => `
+  <section id="tesla">
+    <div class="day-head tesla-head"><h2>Carregamentos Tesla</h2><p>Ir sempre com o destino definido no ecrã do Tesla, para a bateria pré-aquecer.</p></div>
+    ${CHARGERS.map(c => `
+    <article class="stop k-charge">
+      <div class="stop-head"><span class="kicon" aria-hidden="true">⚡</span><div class="head-txt"><div class="time">${esc(c.t)}</div><div class="klabel">${esc(c.w)}</div></div></div>
+      <div class="stop-body"><p class="addr">${esc(c.a)}</p>${rowsHTML([["Capacidade",c.s],["Duração",c.d]])}<div style="height:12px"></div>${navBtns(c)}</div>
+    </article>`).join("")}
+    <div class="note-box alert"><h3>Energia</h3><ul>
+      <li>Sábado soma ≈ 450 km e o carro chega a Barcarena com pouca bateria.</li>
+      <li>Fazer uma carga em Lisboa no domingo (ver Superchargers no mapa do Tesla) ou perguntar aos alojamentos se têm carregador.</li>
+    </ul></div>
+    <div class="note-box"><h3>Troços principais</h3><div class="scroll-x"><table>
+      <thead><tr><th>Troço</th><th>Km</th><th>Tempo</th></tr></thead><tbody>
+      <tr><td>Póvoa → Mealhada</td><td>≈ 150</td><td>1h35</td></tr>
+      <tr><td>Mealhada → Alcochete</td><td>≈ 230</td><td>2h15</td></tr>
+      <tr><td>Alcochete → Barcarena</td><td>≈ 60</td><td>55 min</td></tr>
+      <tr><td>Barcarena → Belém</td><td>≈ 15</td><td>25 min</td></tr>
+      <tr><td>Belém → Praça do Município</td><td>≈ 8</td><td>20 min</td></tr>
+      <tr><td>Praça do Município → Parque das Nações</td><td>≈ 10</td><td>25 min</td></tr>
+      <tr><td>Parque das Nações → Fátima</td><td>≈ 135</td><td>1h25</td></tr>
+      <tr><td>Fátima → Póvoa</td><td>≈ 230</td><td>2h20</td></tr>
+      <tr><td>Parque das Nações → Mealhada</td><td>≈ 205</td><td>2h05</td></tr>
+      <tr><td>Mealhada → Póvoa</td><td>≈ 150</td><td>1h35</td></tr>
+    </tbody></table></div></div>
+  </section>`;
+
+document.getElementById("app").innerHTML = TRIP.map(dayHTML).join("") + teslaHTML();
+
+/* ---------- Hora atual: onde estamos agora e o que vem a seguir ---------- */
+const ALL = [];
+TRIP.forEach(d => d.stops.forEach((s,i) => {
+  const m = s.time.match(/\d{2}:\d{2}/);
+  ALL.push({ id:`${d.id}-${i}`, day:d, s, t:new Date(`${d.date}T${m[0]}:00`) });
+}));
+
+function setHeaderOffset(){
+  const h = document.getElementById("topbar").offsetHeight;
+  document.documentElement.style.setProperty("--hdr", (h + 12) + "px");
+}
+
+function update(scroll){
+  const now = new Date();
+  let cur = null, next = null;
+  for(const x of ALL){ if(x.t <= now) cur = x; else { next = x; break; } }
+  if(cur && now - cur.t > 3*3600*1000) cur = null;
+
+  document.querySelectorAll(".stop.now,.stop.next").forEach(e => e.classList.remove("now","next"));
+  if(cur)  document.getElementById(cur.id).classList.add("now");
+  if(next) document.getElementById(next.id).classList.add("next");
+
+  const todayISO = now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0")+"-"+String(now.getDate()).padStart(2,"0");
+  const label = x => (x.day.date !== todayISO ? x.day.dateLabel + " " : "") + x.s.time.match(/\d{2}:\d{2}/)[0] + " " + x.s.title;
+  const st = [];
+  if(cur)  st.push(`<a class="st now" href="#${cur.id}"><b>AGORA</b><span>${esc(label(cur))}</span></a>`);
+  if(next) st.push(`<a class="st next" href="#${next.id}"><b>A SEGUIR</b><span>${esc(label(next))}</span></a>`);
+  if(!cur && !next) st.push(`<div class="st info"><span>Viagem concluída. Bem-vindos a casa!</span></div>`);
+  document.getElementById("status").innerHTML = st.join("");
+  setHeaderOffset();
+
+  document.querySelectorAll("nav a[data-day]").forEach(a => a.classList.remove("on"));
+  const focus = cur || next;
+  if(focus){
+    const a = document.querySelector(`nav a[data-day="${focus.day.date}"]`);
+    if(a) a.classList.add("on");
+    if(scroll && now >= new Date("2026-10-03T00:00:00")) setTimeout(() => document.getElementById(focus.id).scrollIntoView({behavior:"smooth", block:"start"}), 300);
+  }
+}
+update(true);
+setInterval(() => update(false), 60*1000);
+window.addEventListener("resize", setHeaderOffset);
+</script>
+</body>
+</html>
