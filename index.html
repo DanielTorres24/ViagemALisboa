@@ -593,6 +593,9 @@ function update(scroll){
 update(!location.hash);
 if(location.hash){ const t = document.getElementById(location.hash.slice(1)); if(t) setTimeout(() => t.scrollIntoView({block:"start"}), 50); }
 setInterval(() => update(false), 60*1000);
+/* Ao voltar à página (depois do Waze, ecrã bloqueado, etc.) atualizar logo */
+document.addEventListener("visibilitychange", () => { if(!document.hidden) update(false); });
+window.addEventListener("pageshow", e => { if(e.persisted) update(false); });
 window.addEventListener("resize", setHeaderOffset);
 
 /* Barra compacta depois de passar o cabeçalho (com margem para não oscilar) */
