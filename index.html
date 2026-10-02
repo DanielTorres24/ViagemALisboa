@@ -41,14 +41,44 @@
 
   /* Barra fixa: dias + agora/a seguir */
   .topbar{position:sticky;top:0;z-index:20;background:var(--navy);padding:8px 10px 10px;padding-top:calc(8px + env(safe-area-inset-top,0px));box-shadow:0 2px 0 rgba(0,0,0,.25)}
-  nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  nav{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
   nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50px;border-radius:12px;
-    background:rgba(255,255,255,.1);color:#fff;text-decoration:none;font-weight:700;font-size:.95rem;line-height:1.15;text-align:center;padding:4px 2px;-webkit-tap-highlight-color:transparent}
+    background:rgba(255,255,255,.1);color:#fff;text-decoration:none;font-weight:700;font-size:.86rem;line-height:1.15;text-align:center;padding:4px 2px;-webkit-tap-highlight-color:transparent}
   nav a small{font-weight:500;font-size:.78rem;color:#c5d6e4}
   nav a.on{background:#fff;color:var(--navy)}
   nav a.on small{color:#35566e}
   nav a.tesla-link{background:var(--c-charge);color:#fff}
   nav a.tesla-link small{color:#d9f5e5}
+  nav a.park-link{background:var(--c-park);color:#fff}
+  nav a.park-link small{color:#dbe9ff}
+  nav a small{font-size:.72rem}
+
+  /* Estacionamento em cada cartão */
+  .pk{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;align-items:start;border-radius:12px;padding:10px 12px;margin:0 0 12px}
+  .pk b{grid-row:1 / span 2;font-size:.9rem;font-weight:900;border-radius:8px;padding:6px 8px;white-space:nowrap}
+  .pk span{font-size:.98rem}
+  .pk a{font-size:.92rem;font-weight:800;color:inherit}
+  .pk.free{background:#e3f5ea;color:#0b4f2b} .pk.free b{background:#0f8a4a;color:#fff}
+  .pk.paid{background:#fff1d6;color:#5c3900} .pk.paid b{background:#c77700;color:#fff}
+  .pk.host{background:#e8eef7;color:#1d3350} .pk.host b{background:#44546a;color:#fff}
+  @media (prefers-color-scheme: dark){
+    .pk.free{background:#123825;color:#c9f2da} .pk.paid{background:#3a2d10;color:#ffe2a6} .pk.host{background:#1a2a3c;color:#d5e1ef}
+  }
+
+  /* Guia de estacionamento */
+  .guide{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin:0 0 14px}
+  .guide h3{margin:0 0 10px;font-size:1.15rem}
+  .guide ol,.guide ul{margin:0;padding-left:22px}
+  .guide li{margin:0 0 8px}
+  .guide p{margin:0 0 10px}
+  .guide.key{border:3px solid var(--c-charge)}
+  .guide.warnb{background:var(--warn-bg);color:var(--warn-text);border:0;border-left:6px solid var(--warn-line)}
+  .zones{display:grid;gap:6px;margin:0 0 10px}
+  .zone{display:flex;align-items:center;gap:10px;font-size:1rem}
+  .zone i{width:26px;height:26px;border-radius:6px;flex:0 0 auto;border:1px solid rgba(0,0,0,.2)}
+  .linkbtns{display:grid;gap:8px;margin-top:6px}
+  .linkbtns a{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:12px;text-decoration:none;font-weight:800;text-align:center;padding:6px 10px;background:var(--card);color:var(--text);border:2px solid var(--c-park)}
+  .linkbtns a.call{background:var(--c-park);color:#fff;border-color:var(--c-park)}
   .status{display:grid;gap:6px;margin-top:8px}
   .st{display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;background:rgba(255,255,255,.08);border-radius:12px;padding:8px 10px;min-height:44px}
   .st b{flex:0 0 auto;font-size:.78rem;font-weight:800;border-radius:999px;padding:3px 9px}
@@ -151,7 +181,8 @@
     <a href="#sab" data-day="2026-10-03">Sábado<small>3 out</small></a>
     <a href="#dom" data-day="2026-10-04">Domingo<small>4 out</small></a>
     <a href="#seg" data-day="2026-10-05">Segunda<small>5 out</small></a>
-    <a href="#tesla" class="tesla-link">Tesla<small>Carga</small></a>
+    <a href="#tesla" class="tesla-link">⚡ Tesla<small>Carga</small></a>
+    <a href="#pagar" class="park-link">🅿️ Pagar<small>Estacionar</small></a>
   </nav>
   <div class="status" id="status" aria-live="polite"></div>
 </div>
@@ -175,14 +206,14 @@ const pedrasAddr = PEDRAS.morada ? (PEDRAS.nome ? PEDRAS.nome + ", " : "") + PED
 
 const TRIP = [
  { id:"sab", date:"2026-10-03", dateLabel:"Sáb 03/10", title:"Sábado 3 de outubro", sub:"Mealhada, Alcochete e Barcarena", stops:[
-  { kind:"charge", time:"10:00", walk:"low", title:"Tesla Supercharger Mealhada",
+  { kind:"charge", time:"10:00", walk:"low", title:"Tesla Supercharger Mealhada", pk:{"t": "free", "x": "Grátis. Só se paga a carga, na conta Tesla. Tirar o carro logo que acabar (o Tesla cobra se ficar parado na ficha)."},
     addr:"Rua de São Domingos 20, 3050-983 Mealhada", q:MEALHADA,
     desc:"Carga rápida e pausa. Carregar até 80 a 90 %, porque o troço seguinte tem ≈ 230 km.",
     stay:"15 a 25 min", eta:"≈ 09:40 a 10:00",
     leg:"≈ 150 km · ≈ 1h35 desde a Póvoa de Varzim (saída às 08:00)",
     parking:"Nos lugares do Supercharger.", access:"Sem caminhadas. Casa de banho e café nas imediações." },
 
-  { kind:"stop", time:"12:30–13:00", walk:"low", title:"Alcochete: compra de pedras",
+  { kind:"stop", time:"12:30–13:00", walk:"low", title:"Alcochete: compra de pedras", pk:{"t": "free", "x": "Na rua, em princípio grátis. Se houver parquímetro, o sinal indica."},
     addr: pedrasAddr || "Alcochete (falta a morada da loja)", q: pedrasAddr || "Alcochete, Portugal", needsAddr: !pedrasAddr,
     desc:"Destino obrigatório. Paragem curta para comprar as pedras.",
     stay:"20 a 30 min", eta:"≈ 12:35 a 12:45",
@@ -190,7 +221,7 @@ const TRIP = [
     parking:"O mais perto possível da porta da loja.",
     access:"As pedras são pesadas: estacionar à porta e pedir ajuda na loja para carregar." },
 
-  { kind:"food", time:"13:30", walk:"low", title:"Almoço em Alcochete",
+  { kind:"food", time:"13:30", walk:"low", title:"Almoço em Alcochete", pk:{"t": "free", "x": "Na rua, em princípio grátis. Se houver parquímetro, o sinal indica."},
     addr:"Centro de Alcochete", desc:"Comida tradicional, perto da loja. Sábado ao almoço convém ligar a reservar mesa para 4.",
     stay:"≈ 1h30 (saída às 15:00)", eta:"≈ 13:00 a 13:30", leg:"≈ 1 a 3 km · ≈ 5 min",
     parking:"Na rua junto ao restaurante.", access:"Escolher mesa perto da entrada.",
@@ -200,14 +231,14 @@ const TRIP = [
       { n:"Os Petiscos do António", r:"4,3", c:"850", h:"Sáb 12:00–15:00", note:"Sabor caseiro (pataniscas, atum à lagareiro). Na avenida principal, à entrada da vila.", ll:"38.751212,-8.967028", tel:"+351212347826" }
     ] },
 
-  { kind:"hotel", time:"16:00", walk:"low", title:"Lisbon Country Villa (check-in)",
+  { kind:"hotel", time:"16:00", walk:"low", title:"Lisbon Country Villa (check-in)", pk:{"t": "host", "x": "Estacionamento do alojamento. Confirmar com o anfitrião."},
     addr:"Quinta de Santo António do Sol Posto 2, 2730-038 Barcarena", ll:VILLA_LL,
     desc:"Check-in e tarde livre para descansar. O Waze leva à localização exata.",
     stay:"Dormida", eta:"≈ 15:55 a 16:15",
     leg:"≈ 60 km · ≈ 55 min (partida às 15:00)",
     parking:"Na quinta. Confirmar com o alojamento.", access:"Perguntar se há tomada ou carregador para o carro." },
 
-  { kind:"food", time:"20:00", walk:"low", title:"Jantar perto de Barcarena",
+  { kind:"food", time:"20:00", walk:"low", title:"Jantar perto de Barcarena", pk:{"t": "free", "x": "Na rua junto ao restaurante, em princípio grátis à noite. Ver sempre o sinal."},
     addr:"Barcarena / Oeiras", desc:"Comida portuguesa com boa relação qualidade-preço. Sábado à noite enche: reservar.",
     stay:"≈ 1h30 a 2h", eta:"≈ 19:50", leg:"≈ 1 a 6 km · ≈ 5 a 15 min",
     parking:"Na rua junto ao restaurante.", access:"Restaurantes ao nível da rua.",
@@ -220,43 +251,43 @@ const TRIP = [
   { kind:"start", time:"09:00", title:"Saída da Lisbon Country Villa",
     addr:"Barcarena", ll:VILLA_LL, desc:"Saída para Belém.", stay:"Partida", eta:"", leg:"", parking:"", access:"" },
 
-  { kind:"park", time:"09:30", walk:"mid", title:"Estacionamento CCB (Belém)",
-    addr:"Centro Cultural de Belém, Praça do Império, 1449-003 Lisboa", q:"Estacionamento CCB Centro Cultural de Belém Lisboa",
-    desc:"O carro fica aqui toda a manhã.",
+  { kind:"park", time:"09:30", walk:"low", title:"Parque EMEL Belém (em frente aos Pastéis)",
+    pk:{"t":"paid","x":"Pago, todos os dias das 8h às 2h. 1 hora 1 €, 2 horas 2 €, 3 horas 3,80 €, 4 horas 5,60 €. Pagar antes de sair. Se estiver cheio: parque do CCB (também pago) ou rua, que ao domingo normalmente não se paga."},
+    addr:"Rua de Belém, em frente aos Pastéis de Belém (76 lugares)", ll:"38.697230,-9.203909",
+    desc:"O carro fica aqui toda a manhã. Os Pastéis ficam mesmo em frente, e os Jerónimos a ≈ 250 m.",
     stay:"Até cerca das 14:00", eta:"≈ 09:25 a 09:35", leg:"≈ 15 km · ≈ 25 min",
-    parking:"Parque do CCB. Confirmar tarifa.",
-    access:"Aos Pastéis de Belém são ≈ 700 m planos. Quem tiver mais dificuldade pode ficar à porta dos Pastéis antes de estacionar." },
+    access:"Quase sem caminhada até aos Pastéis. Chegar cedo, porque o parque é pequeno." },
 
-  { kind:"food", time:"09:30–10:15", walk:"mid", title:"Pastéis de Belém",
+  { kind:"food", time:"09:30–10:15", walk:"low", title:"Pastéis de Belém",
     addr:"Rua de Belém 84–92, 1300-085 Lisboa", q:"Pastéis de Belém, Rua de Belém 84, 1300-085 Lisboa", mode:"walking",
     desc:"Pastéis de nata na casa original. Pedir mesa na sala interior em vez da fila de take-away.",
-    stay:"≈ 45 min", eta:"≈ 09:40", leg:"≈ 700 m a pé · ≈ 10 min",
-    parking:"Usar o CCB.", access:"Piso plano." },
+    stay:"≈ 45 min", eta:"≈ 09:35", leg:"Do outro lado da rua, ≈ 50 m",
+    pk:{"t":"paid","x":"O carro fica no Parque EMEL Belém, mesmo em frente."}, access:"Piso plano." },
 
-  { kind:"sight", time:"10:15–10:45", walk:"low", title:"Mosteiro dos Jerónimos (exterior)",
+  { kind:"sight", time:"10:15–10:45", walk:"low", title:"Mosteiro dos Jerónimos (exterior)", pk:{"t": "paid", "x": "O carro continua no Parque EMEL Belém."},
     addr:"Praça do Império, Lisboa", q:"Mosteiro dos Jerónimos, Lisboa", mode:"walking",
     desc:"Ver a fachada pelo exterior, sem filas.", stay:"≈ 30 min", eta:"≈ 10:15", leg:"≈ 250 m a pé",
-    parking:"CCB a ≈ 400 m.", access:"Zona plana e larga." },
+    access:"Zona plana e larga." },
 
-  { kind:"sight", time:"10:45–11:15", walk:"low", title:"Jardim da Praça do Império",
+  { kind:"sight", time:"10:45–11:15", walk:"low", title:"Jardim da Praça do Império", pk:{"t": "paid", "x": "O carro continua no Parque EMEL Belém."},
     addr:"Em frente aos Jerónimos", q:"Jardim da Praça do Império, Lisboa", mode:"walking",
     desc:"Passeio calmo e descanso sentados.", stay:"≈ 30 min", eta:"≈ 10:45", leg:"≈ 150 m a pé",
     parking:"Junto ao CCB.", access:"Caminhos planos." },
 
-  { kind:"sight", opt:true, time:"11:15–12:00", walk:"high", title:"Padrão dos Descobrimentos",
+  { kind:"sight", opt:true, time:"11:15–12:00", walk:"high", title:"Padrão dos Descobrimentos", pk:{"t": "free", "x": "Se forem de carro: lugares de rua junto ao rio. Ao domingo, na rua, normalmente não se paga. Ver o sinal."},
     addr:"Avenida de Brasília, Lisboa", q:"Padrão dos Descobrimentos, Lisboa", mode:"walking",
     desc:"Só se o grupo estiver confortável. Ida e volta ≈ 1,8 km a pé.", stay:"≈ 45 min", eta:"≈ 11:15",
     leg:"≈ 900 m a pé (passagem subterrânea)", parking:"Alternativa: ir de carro e estacionar junto ao rio.",
     access:"É o troço mais longo a pé da manhã." },
 
-  { kind:"sight", opt:true, time:"12:00–12:15", walk:"mid", title:"Torre de Belém",
+  { kind:"sight", opt:true, time:"12:00–12:15", walk:"mid", title:"Torre de Belém", pk:{"t": "free", "x": "Lugares de rua junto ao rio. Ao domingo normalmente não se paga. Ver o sinal."},
     addr:"Avenida de Brasília, Lisboa", q:"Torre de Belém, Lisboa",
     desc:"Opcional. Só o exterior, de preferência indo de carro.", stay:"≈ 15 min", eta:"≈ 12:00",
     leg:"≈ 3 min de carro", parking:"Junto ao rio, se houver lugar.", access:"Algum piso irregular junto à torre." },
 
-  { kind:"food", time:"12:30–13:30", walk:"low", title:"Almoço em Belém",
-    addr:"Rua de Belém, junto aos Pastéis", desc:"Três tascas a poucos passos umas das outras, a ≈ 600 m do CCB.",
-    stay:"≈ 1h (saída às 14:00)", eta:"≈ 12:30", leg:"A pé, ≈ 600 m do CCB",
+  { kind:"food", time:"12:30–13:30", walk:"low", title:"Almoço em Belém", pk:{"t": "paid", "x": "O carro continua no Parque EMEL Belém, a 1 minuto dos restaurantes."},
+    addr:"Rua de Belém, junto aos Pastéis", desc:"Três restaurantes a poucos passos uns dos outros e do parque.",
+    stay:"≈ 1h (saída às 14:00)", eta:"≈ 12:30", leg:"A pé, ≈ 100 m do parque",
     parking:"Carro no CCB.", access:"Piso plano.",
     eat:[
       { n:"Taberna dos Ferreiros", r:"4,6", c:"1 955", h:"Dom 12:00–15:00", note:"Cozinha tradicional numa travessa sossegada. Polvo muito elogiado.", ll:"38.697551,-9.201915", tel:"+351215873837", mode:"walking" },
@@ -264,33 +295,33 @@ const TRIP = [
       { n:"Queijadas de Belém", r:"4,2", c:"2 451", h:"Aberto todo o dia", note:"Comida portuguesa simples, preços justos.", ll:"38.697144,-9.201794", tel:"+351213630034", mode:"walking" }
     ] },
 
-  { kind:"park", time:"14:30", walk:"low", title:"Saba Praça do Município",
+  { kind:"park", time:"14:30", walk:"low", title:"Saba Praça do Município", pk:{"t": "paid", "x": "Parque subterrâneo pago, todos os dias. Tirar talão à entrada e pagar na máquina antes de voltar ao carro. O preço está afixado à entrada."},
     addr:"Praça do Município, Lisboa", q:"Saba Praça do Município, Lisboa",
     desc:"Parque subterrâneo a ≈ 300 m do Terreiro do Paço.", stay:"Até cerca das 16:30", eta:"≈ 14:25",
     leg:"≈ 8 km · ≈ 20 a 25 min", parking:"Parque Saba. Confirmar tarifa.", access:"Calçada portuguesa: calçado confortável." },
 
-  { kind:"sight", time:"14:40–15:15", walk:"low", title:"Praça do Comércio",
+  { kind:"sight", time:"14:40–15:15", walk:"low", title:"Praça do Comércio", pk:{"t": "paid", "x": "O carro continua no Saba."},
     addr:"Terreiro do Paço, Lisboa", q:"Praça do Comércio, Lisboa", mode:"walking",
     desc:"A grande praça junto ao Tejo.", stay:"≈ 35 min", eta:"≈ 14:40", leg:"≈ 300 m a pé",
     parking:"Saba.", access:"Plana. Esplanadas nas arcadas para descansar." },
 
-  { kind:"sight", time:"15:15–15:30", walk:"mid", title:"Cais das Colunas",
+  { kind:"sight", time:"15:15–15:30", walk:"mid", title:"Cais das Colunas", pk:{"t": "paid", "x": "O carro continua no Saba."},
     addr:"Praça do Comércio, Lisboa", q:"Cais das Colunas, Lisboa", mode:"walking",
     desc:"Escadaria que desce até ao rio.", stay:"≈ 15 min", eta:"≈ 15:15", leg:"≈ 150 m a pé",
     parking:"Saba.", access:"Há degraus. Pode-se ver do topo." },
 
-  { kind:"sight", time:"15:30–16:00", walk:"low", title:"Rua Augusta (curta)",
+  { kind:"sight", time:"15:30–16:00", walk:"low", title:"Rua Augusta (curta)", pk:{"t": "paid", "x": "O carro continua no Saba. Pagar na máquina antes de descer ao carro."},
     addr:"Arco da Rua Augusta, Lisboa", q:"Arco da Rua Augusta, Lisboa", mode:"walking",
     desc:"Passar o arco e voltar ao parque.", stay:"≈ 30 min", eta:"≈ 15:30", leg:"≈ 100 m a pé",
     parking:"Regresso ao Saba ≈ 300 m.", access:"Plana, mas movimentada." },
 
-  { kind:"hotel", time:"17:00", walk:"low", title:"Alojamento Parque das Nações (check-in)",
+  { kind:"hotel", time:"17:00", walk:"low", title:"Alojamento Parque das Nações (check-in)", pk:{"t": "host", "x": "Perguntar ao alojamento se tem lugar. Se não tiver: na rua, ao domingo e feriado normalmente não se paga (ver o sinal)."},
     addr:"Parque das Nações, Lisboa", ll:HOTEL_LL,
     desc:"Check-in. Fim de tarde livre. O Waze leva à localização exata.",
     stay:"Dormida", eta:"≈ 16:45 a 17:00", leg:"≈ 10 km · ≈ 25 min (partida 16:15 a 16:30)",
     parking:"Confirmar com o alojamento.", access:"Zona plana." },
 
-  { kind:"food", time:"20:00", walk:"low", title:"Jantar perto do Parque das Nações",
+  { kind:"food", time:"20:00", walk:"low", title:"Jantar perto do Parque das Nações", pk:{"t": "free", "x": "Na rua junto ao restaurante. Domingo à noite normalmente não se paga. Ver o sinal."},
     addr:"Olivais / Parque das Nações", desc:"Comida portuguesa bem avaliada. Todos a ≈ 5 min de carro do alojamento.",
     stay:"≈ 1h30 a 2h", eta:"≈ 19:50", leg:"≈ 1,5 a 2 km · ≈ 5 min de carro",
     parking:"Na rua ou parques da zona.", access:"Zonas planas.",
@@ -301,16 +332,16 @@ const TRIP = [
     ] }
  ]},
  { id:"seg", date:"2026-10-05", dateLabel:"Seg 05/10", title:"Segunda-feira 5 de outubro (feriado)", sub:"Oceanário e regresso a casa", stops:[
-  { kind:"hotel", time:"09:30–10:00", walk:"low", title:"Check-out",
+  { kind:"hotel", time:"09:30–10:00", walk:"low", title:"Check-out", pk:{"t": "host", "x": "Perguntar se o carro pode ficar no alojamento até depois do almoço. Poupa estacionamento."},
     addr:"Parque das Nações", ll:HOTEL_LL, desc:"Malas no carro.", stay:"≈ 30 min", eta:"", leg:"", parking:"", access:"" },
 
-  { kind:"sight", time:"10:00–10:30", walk:"low", title:"Oceanário de Lisboa",
+  { kind:"sight", time:"10:00–10:30", walk:"low", title:"Oceanário de Lisboa", pk:{"t": "paid", "x": "Parque coberto junto ao Oceanário: pago, com talão e máquina. Alternativa: na rua, que no feriado normalmente não se paga (ver o sinal)."},
     addr:"Esplanada D. Carlos I, 1990-005 Lisboa", q:"Oceanário de Lisboa, Esplanada D. Carlos I, 1990-005 Lisboa",
     desc:"Visita até cerca das 13:00. Comprar bilhetes online.", stay:"≈ 2h30 a 3h", eta:"≈ 10:05 a 10:15",
     leg:"≈ 1,5 km · ≈ 5 min", parking:"Parque junto ao Oceanário. Em feriado pode encher: chegar cedo.",
     access:"Totalmente acessível. Usar os elevadores." },
 
-  { kind:"food", time:"13:00–14:15", walk:"low", title:"Almoço no Parque das Nações",
+  { kind:"food", time:"13:00–14:15", walk:"low", title:"Almoço no Parque das Nações", pk:{"t": "paid", "x": "O carro fica onde estava durante a visita. Se estiver num parque, pagar na máquina antes de sair."},
     addr:"Perto do Oceanário", desc:"É feriado: ligar antes a confirmar que estão abertos.",
     stay:"≈ 1h15", eta:"≈ 13:00", leg:"A pé ou ≈ 5 min de carro",
     parking:"Carro no parque do Oceanário.", access:"Zona plana.",
@@ -320,12 +351,12 @@ const TRIP = [
       { n:"D'Bacalhau", r:"4,4", c:"10 380", h:"Seg 12:00–16:00", note:"Bacalhau junto ao rio, ≈ 5 min de carro.", ll:"38.771300,-9.092300", tel:"+351218941296" }
     ] },
 
-  { kind:"charge", opt:true, time:"16:10", walk:"low", title:"Opção A: Supercharger Fátima",
+  { kind:"charge", opt:true, time:"16:10", walk:"low", title:"Opção A: Supercharger Fátima", pk:{"t": "free", "x": "Grátis. Só se paga a carga, na conta Tesla."},
     addr:"Estrada da Batalha 42, 2495-405 Fátima", q:FATIMA,
     desc:"A meio do caminho. Depois faltam ≈ 230 km.", stay:"25 a 35 min", eta:"≈ 16:00 a 16:15",
     leg:"≈ 135 km · ≈ 1h25 (saída às 14:30)", parking:"Lugares do Supercharger.", access:"Pausa para casa de banho e café." },
 
-  { kind:"charge", opt:true, time:"16:50", walk:"low", title:"Opção B: Supercharger Mealhada",
+  { kind:"charge", opt:true, time:"16:50", walk:"low", title:"Opção B: Supercharger Mealhada", pk:{"t": "free", "x": "Grátis. Só se paga a carga, na conta Tesla."},
     addr:"Rua de São Domingos 20, 3050-983 Mealhada", q:MEALHADA,
     desc:"Mais perto de casa. Depois faltam ≈ 150 km.", stay:"20 a 30 min", eta:"≈ 16:45 a 17:00",
     leg:"≈ 205 km · ≈ 2h05 (saída às 14:30)", parking:"Lugares do Supercharger.", access:"Pausa para casa de banho e café." },
@@ -360,6 +391,12 @@ function eatHTML(list){
     </div>`).join("")}</div>`;
 }
 
+const PKL = { free:"🅿️ GRÁTIS", paid:"🅿️ PAGO", host:"🅿️ ALOJAMENTO" };
+function pkHTML(p){
+  if(!p) return "";
+  return `<div class="pk ${p.t}"><b>${PKL[p.t]}</b><span>${esc(p.x)}</span>${p.t==="paid" ? `<a href="#pagar">Como pagar</a>` : ""}</div>`;
+}
+
 function stopHTML(day, s, i){
   const k = KIND[s.kind];
   const chips = [];
@@ -369,7 +406,6 @@ function stopHTML(day, s, i){
   const more = [];
   if(s.leg) more.push(["Troço até aqui", s.leg]);
   if(s.eta) more.push(["Chegada estimada", s.eta]);
-  if(s.parking) more.push(["Estacionamento", s.parking]);
   if(s.access) more.push(["Acessibilidade e caminhada", s.access]);
   return `
   <article class="stop k-${s.kind}${s.opt?" optional":""}" id="${day.id}-${i}">
@@ -382,6 +418,7 @@ function stopHTML(day, s, i){
       <h3>${esc(s.title)}</h3>
       <p class="addr">${esc(s.addr)}</p>
       <div class="chips">${chips.join("")}</div>
+      ${pkHTML(s.pk)}
       ${s.needsAddr ? `<p class="warn">Falta a morada da loja de pedras.</p>` : ""}
       <p class="desc">${esc(s.desc)}</p>
       ${s.eat ? eatHTML(s.eat) : navBtns(s)}
@@ -403,7 +440,7 @@ const teslaHTML = () => `
     ${CHARGERS.map(c => `
     <article class="stop k-charge">
       <div class="stop-head"><span class="kicon" aria-hidden="true">⚡</span><div class="head-txt"><div class="time">${esc(c.t)}</div><div class="klabel">${esc(c.w)}</div></div></div>
-      <div class="stop-body"><p class="addr">${esc(c.a)}</p>${rowsHTML([["Capacidade",c.s],["Duração",c.d]])}<div style="height:12px"></div>${navBtns(c)}</div>
+      <div class="stop-body"><p class="addr">${esc(c.a)}</p>${pkHTML({t:"free",x:"Estacionar é grátis. Só se paga a carga, na conta Tesla."})}${rowsHTML([["Capacidade",c.s],["Duração",c.d]])}<div style="height:12px"></div>${navBtns(c)}</div>
     </article>`).join("")}
     <div class="note-box alert"><h3>Energia</h3><ul>
       <li>Sábado soma ≈ 450 km e o carro chega a Barcarena com pouca bateria.</li>
@@ -424,7 +461,82 @@ const teslaHTML = () => `
     </tbody></table></div></div>
   </section>`;
 
-document.getElementById("app").innerHTML = TRIP.map(dayHTML).join("") + teslaHTML();
+
+const EMEL_TARIFAS = "https://www.emel.pt/pt/onde-estacionar/via-publica/tarifarios/";
+const EMEL_MAPA = "https://www.emel.pt/pt/onde-estacionar/via-publica/mapa-de-tarifas/";
+const EMEL_MBWAY = "https://www.emel.pt/pt/onde-estacionar/via-publica/meios-de-pagamento/mbway/";
+const EMEL_EPARK = "https://www.emel.pt/pt/onde-estacionar/via-publica/meios-de-pagamento/epark/";
+const VIAVERDE = "https://www.viaverde.pt/particulares/Via-Verde/Onde-e-como-usar/estacionar";
+
+const pagarHTML = () => `
+  <section id="pagar">
+    <div class="day-head" style="background-color:var(--c-park)"><h2>Estacionamento: como pagar</h2><p>Lisboa: o essencial para esta viagem.</p></div>
+
+    <div class="guide key">
+      <h3>Nesta viagem</h3>
+      <ul>
+        <li><b>Sábado</b> (Alcochete e Barcarena): na rua, em princípio grátis.</li>
+        <li><b>Domingo 4 e segunda 5 (feriado)</b>: em Lisboa, os lugares de rua com parquímetro normalmente <b>não se pagam</b>. Confirmar sempre no sinal ou no próprio parquímetro, porque há exceções.</li>
+        <li><b>Parques fechados</b> (EMEL Belém, Saba, Oceanário) <b>pagam-se sempre</b>, todos os dias.</li>
+      </ul>
+    </div>
+
+    <div class="guide">
+      <h3>Parque com cancela e talão</h3>
+      <ol>
+        <li>À entrada, carregar no botão e tirar o talão.</li>
+        <li>Levar o talão consigo. Não o deixar dentro do carro.</li>
+        <li>Antes de voltar ao carro, ir à máquina de pagamento: meter o talão e pagar com cartão ou moedas.</li>
+        <li>À saída, meter o talão na máquina da cancela. A cancela abre.</li>
+      </ol>
+    </div>
+
+    <div class="guide">
+      <h3>Na rua com parquímetro (EMEL)</h3>
+      <p>Em Lisboa paga-se sobretudo nos dias úteis, das 9h às 19h. A cor no parquímetro indica o preço por hora:</p>
+      <div class="zones">
+        <div class="zone"><i style="background:#3fa34d"></i>Verde: ≈ 0,85 € por hora (a mais barata)</div>
+        <div class="zone"><i style="background:#f2c230"></i>Amarela: ≈ 1,25 € por hora</div>
+        <div class="zone"><i style="background:#d9342b"></i>Vermelha: ≈ 1,70 € por hora, máximo 2 horas</div>
+        <div class="zone"><i style="background:#7a4a2a"></i>Castanha: ≈ 2,10 € por hora</div>
+      </div>
+      <p>O tempo máximo está escrito no parquímetro.</p>
+      <p><b>Pagar com moedas:</b></p>
+      <ol>
+        <li>Escolher o tempo e meter as moedas (levar moedas certas).</li>
+        <li>Tirar o talão.</li>
+        <li>Pôr o talão dentro do carro, junto ao para-brisas, bem visível.</li>
+      </ol>
+      <p><b>Pagar com MB WAY</b> (só nos parquímetros com o símbolo MB WAY):</p>
+      <ol>
+        <li>No parquímetro, escolher MB WAY e o tempo.</li>
+        <li>Na app MB WAY, tocar em "Pagar com MB WAY" e ler o código QR do parquímetro.</li>
+        <li>Autorizar, tirar o talão e pô-lo junto ao para-brisas.</li>
+      </ol>
+      <p><b>Pagar pelo telemóvel, sem ir ao parquímetro:</b> app ePark (da EMEL) ou app Via Verde, opção Estacionar, se o carro tiver Via Verde.</p>
+      <div class="linkbtns">
+        <a href="${EMEL_EPARK}" target="_blank" rel="noopener">App ePark: como funciona</a>
+        <a href="${VIAVERDE}" target="_blank" rel="noopener">Via Verde Estacionar</a>
+        <a href="${EMEL_MBWAY}" target="_blank" rel="noopener">MB WAY nos parquímetros</a>
+        <a href="${EMEL_MAPA}" target="_blank" rel="noopener">Mapa das cores EMEL</a>
+      </div>
+    </div>
+
+    <div class="guide warnb">
+      <h3>Evitar multas e bloqueios</h3>
+      <ul>
+        <li>Não estacionar em lugares com sinal de <b>Residentes</b>, <b>Cargas e descargas</b>, em passeios ou passadeiras.</li>
+        <li>Um carro bloqueado paga 87 € de taxa mais a multa. Rebocado: 111 € mais 32 € por cada dia.</li>
+        <li>No Parque das Nações, a zona junto ao rio é pedonal: não entrar de carro.</li>
+      </ul>
+      <div class="linkbtns">
+        <a class="call" href="tel:+351217803131">Carro bloqueado? Ligar EMEL 21 780 31 31</a>
+        <a href="${EMEL_TARIFAS}" target="_blank" rel="noopener">Tarifas oficiais EMEL</a>
+      </div>
+    </div>
+  </section>`;
+
+document.getElementById("app").innerHTML = TRIP.map(dayHTML).join("") + teslaHTML() + pagarHTML();
 
 /* ---------- Hora atual: onde estamos agora e o que vem a seguir ---------- */
 const ALL = [];
